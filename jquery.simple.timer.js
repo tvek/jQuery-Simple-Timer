@@ -6,6 +6,8 @@
 * Example:
 *   $('.timer').startTimer();
 *
+* Template modified by Thomas Vimal Easo K for adding more fields
+*
 */
 
 (function (factory) {
@@ -53,6 +55,7 @@
     timer._options.classNameSeconds       = classNames.seconds  || 'jst-seconds'
       , timer._options.classNameMinutes   = classNames.minutes  || 'jst-minutes'
       , timer._options.classNameHours     = classNames.hours    || 'jst-hours'
+      , timer._options.classNameDays      = classNames.days    || 'jst-days'
       , timer._options.classNameClearDiv  = classNames.clearDiv || 'jst-clearDiv'
       , timer._options.classNameTimeout   = classNames.timeout || 'jst-timeout';
   }
@@ -71,10 +74,14 @@
       var hours = document.createElement('div');
       hours.className = that._options.classNameHours;
 
+      var days = document.createElement('div');
+      days.className = that._options.classNameDays;
+
       var clearDiv = document.createElement('div');
       clearDiv.className = that._options.classNameClearDiv;
 
       return timerBoxElement.
+        append(days).
         append(hours).
         append(minutes).
         append(seconds).
@@ -197,6 +204,7 @@
     element.find('.jst-seconds').text('00');
     element.find('.jst-minutes').text('00:');
     element.find('.jst-hours').text('00:');
+    element.find('.jst-days').text('00:');
   };
 
   Timer.prototype.currentTime = function() {
@@ -220,6 +228,10 @@
       return padded;
     };
 
+    //alert(' Time Left : '+timeLeft);
+    var days = Math.floor(timeLeft / 86400);
+    timeLeft -= days * 86400;
+
     var hours = Math.floor(timeLeft / 3600);
     timeLeft -= hours * 3600;
 
@@ -227,11 +239,13 @@
     timeLeft -= minutes * 60;
 
     var seconds = parseInt(timeLeft % 60, 10);
+    //alert('Days : '+days+' Hours : '+hours+' Minutes : '+minutes+' Seconds : '+seconds);
+    //alert(' Time Left : '+timeLeft);
 
     if (+hours === 0 && +minutes === 0 && +seconds === 0) {
       return [];
     } else {
-      return [lpad(hours), lpad(minutes), lpad(seconds)];
+      return [lpad(days),lpad(hours), lpad(minutes), lpad(seconds)];
     }
   };
 
@@ -243,9 +257,10 @@
       return false;
     }
 
-    element.find('.' + this._options.classNameSeconds).text(finalValues.pop());
-    element.find('.' + this._options.classNameMinutes).text(finalValues.pop() + ':');
-    element.find('.' + this._options.classNameHours).text(finalValues.pop() + ':');
+    element.find('.' + this._options.classNameSeconds).text(finalValues.pop() + 's');
+    element.find('.' + this._options.classNameMinutes).text(finalValues.pop() + 'M:');
+    element.find('.' + this._options.classNameHours).text(finalValues.pop() + 'H:');
+    element.find('.' + this._options.classNameDays).text(finalValues.pop() + 'D:');
   };
 
 
